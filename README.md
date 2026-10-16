@@ -34,7 +34,11 @@ Post-Installation
 This will only install the kernel drivers. You still need to run the installer to ensure
 the rest of the driver stack gets installed:
 
-    ./NVIDIA-Linux-x86_64-340.108.run --no-kernel-module
+    sudo make post-install
+
+Or manually:
+
+    sudo ./NVIDIA-Linux-x86_64-340.108.run --no-kernel-module --no-x-check --no-check-for-alternate-installs
 
 You might need to rerun this every time your Xorg package gets updated, since there's a
 conflict with the GLX library.

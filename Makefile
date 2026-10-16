@@ -86,7 +86,7 @@ DISTFILES := \
 	$(SRCFILES)
 
 
-.PHONY: all clean install uninstall distdir dist patch
+.PHONY: all clean install uninstall distdir dist patch post-install
 
 
 all: nv-kernel.o_shipped
@@ -127,7 +127,13 @@ endif
 	cp nv-kernel.o_shipped $(SRCTREE)/$(DISTDIR)
 	dkms add -m $(PACKAGE) -v $(VERSION)
 	dkms build -m $(PACKAGE) -v $(VERSION)
-	dkms install -m $(PACKAGE) -v $(VERSION)
+	dkms install --force -m $(PACKAGE) -v $(VERSION)
+
+
+post-install:
+	$(INSTALLER) -s --no-kernel-module --no-x-check --no-check-for-alternate-installs
+	@[ -f /usr/lib64/libnvidia-fbc.so.340.108 ] && ln -sf libnvidia-fbc.so.340.108 /usr/lib64/libnvidia-fbc.so.1 || true
+	@[ -f /usr/lib64/libnvidia-opencl.so.340.108 ] && ln -sf libnvidia-opencl.so.340.108 /usr/lib64/libnvidia-opencl.so.1 || true
 
 
 uninstall:
