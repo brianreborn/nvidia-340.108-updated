@@ -21,8 +21,16 @@ NVIDIA_CFLAGS := \
 CFLAGS_MODULE := \
 	-I$(PWD) \
 	$(NVIDIA_CFLAGS) \
-	-Werror
+	-Wno-missing-prototypes \
+	-Wno-missing-declarations \
+	-Wno-error
 
+
+OBJECT_FILES_NON_STANDARD := y
+nvidia.o: override objtool-enabled =
+nvidia-uvm.o: override objtool-enabled =
+$(obj)/nvidia.o: override objtool-enabled =
+$(obj)/nvidia-uvm.o: override objtool-enabled =
 
 obj-m := nvidia.o nvidia-uvm.o
 

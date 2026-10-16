@@ -19,6 +19,7 @@ rm -rf ${NV_DIR}
 rm -rf updated
 mkdir updated
 cp -t updated *.{h,c}
+rm -f updated/*.mod.c
 
 
 diff --recursive --unified --new-file original updated > updated.patch || true

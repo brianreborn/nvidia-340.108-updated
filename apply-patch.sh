@@ -22,8 +22,9 @@ do
 done
 
 rm -rf ${NV_DIR}
+rm -f nvidia-config.h
 
 
-patch --verbose --unified -p1 < updated.patch
+patch --verbose --unified --forward -p1 < updated.patch
 
 exit 0
