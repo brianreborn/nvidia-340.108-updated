@@ -42,3 +42,40 @@ Or manually:
 
 You might need to rerun this every time your Xorg package gets updated, since there's a
 conflict with the GLX library.
+
+Display / X Server Notes (CentOS Stream 10)
+--------------------------------------------
+
+CentOS Stream 10 does **not** ship a native Xorg server (`xorg-x11-server-Xorg`
+was removed). GDM requires Wayland; Xwayland is available for legacy X11 apps.
+
+### Firmware / GSP Warning
+
+The legacy 340.108 driver does not include the GPU System Processor (GSP)
+firmware required by the newer open-source `nvidia.ko`. The following NVRM
+message in `dmesg` / `journalctl` is **expected and harmless** for the GeForce
+8600 GT (G84):
+
+    NVRM: The NVIDIA GPU ... is not supported ... because it does not include
+    the required GPU System Processor (GSP).
+
+The legacy DKMS module (`nvidia/340.108`) is what actually drives the card; the
+open-source module simply refuses to probe it, which is correct behavior.
+
+### Wayland Compositor (Weston)
+
+Because GDM cannot fall back to a native Xorg session on CentOS Stream 10, a
+lightweight Weston compositor is configured as a user-level systemd service:
+
+    ~/.config/systemd/user/weston.service
+
+It uses the software (pixman) renderer so no EGL/OpenGL support is required:
+
+    ExecStart=/usr/bin/weston --backend=drm --renderer=pixman
+
+Enable/start it with:
+
+    loginctl enable-linger $USER
+    systemctl --user enable --now weston.service
+
+Weston will start automatically on login (and at boot if linger is enabled).
